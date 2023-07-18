@@ -13,7 +13,12 @@
 
 #define BUFFER_SIZE 1024
 
+extern char **environ;
+
 char *_strdup(char *org);
 int _strlen(char *str);
+int _strcmp(const char *X, const char *Y);
+int _strncmp(const char * s1, const char * s2, size_t n);
+char *_strcat(char* destination, const char* source);
 
 #endif

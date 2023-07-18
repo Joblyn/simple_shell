@@ -4,50 +4,43 @@
  * main - Main function handling the shell commands and interactions
  * Return: 0 on success; -1 on failure
  */
-int main(void)
+ int main(void)
 {
 
 	char *buffer = malloc(BUFFER_SIZE);
 	int status;
 	char *token;
-	char *toks[1];
+	char *toks[2];
 	int counter = 0;
 	size_t len = BUFFER_SIZE;
-	pid_t my_pid;
 	pid_t child_pid = 1;
-
-	my_pid = getpid();
+	ssize_t bytesread;
+	char path[5] = "/bin/";
+	char *envp[] = { "/bin/", NULL };
 
 	while (1)
 	{
 		_printf("#hsh$ "); /* Display the prompt */
 
-		int bytesread = getline(&buffer, &len, stdin);
+		bytesread = getline(&buffer, &len, stdin);
 
-		/* Handle end of file (Ctrl+D) */
+		/* Handle end of file (Ctrl+D)*/
 		if (bytesread == -1)
 		{
-			free(buffer);
 			_printf("\n");
 			break;
 		}
-		/*strcmp not allowed*/
-		/* if (strcmp(command, "exit") == 0)
-		{
-			break;
-		} */
 
-		/* Print an error message if execution failed */
-		if (status == -1)
-		{
-			perror("ERROR: Command execution failed");
-			free(buffer);
-			return(-1);
-		}
-
-		/* Execute the user command here */
-		_printf("%s", buffer);
 		token = strtok(buffer, " ");
+		_printf("buffer: %s\n", buffer);
+                _printf("token: %s\n", token);
+		/*add path to beginning of command*/
+		if (!(_strncmp(envp[0], token, _strlen(envp[0])) == 0)) {
+			_strcat(path, token);
+			token = path;
+		}
+		_printf("token: %s", token);
+		counter = 0;
 		while (token != NULL)
 		{
 			toks[counter] = _strdup(token);
@@ -58,19 +51,20 @@ int main(void)
 		child_pid = fork();
 		if (child_pid == -1)
 		{
-			perror("ERROR: Error creating child process");
+			perror("ERROR");
 			free(buffer);
 			return(-1);
 		}
+
 		if (child_pid == 0)
 		{
-			child_pid = getpid();
-			if (execve(toks[0], toks, NULL) == -1)
+			_printf("toks[0]: %s\n", toks[0]);
+			if (execve(toks[0], toks, envp) == -1)
 			{
-				perror("ERROR: Error executing command");
+				perror("ERROR");
 				free(buffer);
 				return (-1);
-			}	
+			}
 		} else {
 			wait(&status);
 		}
