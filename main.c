@@ -32,14 +32,11 @@
 		}
 
 		token = strtok(buffer, " ");
-		_printf("buffer: %s\n", buffer);
-                _printf("token: %s\n", token);
 		/*add path to beginning of command*/
 		if (!(_strncmp(envp[0], token, _strlen(envp[0])) == 0)) {
 			_strcat(path, token);
 			token = path;
 		}
-		_printf("token: %s", token);
 		counter = 0;
 		while (token != NULL)
 		{
@@ -58,7 +55,6 @@
 
 		if (child_pid == 0)
 		{
-			_printf("toks[0]: %s\n", toks[0]);
 			if (execve(toks[0], toks, envp) == -1)
 			{
 				perror("ERROR");
