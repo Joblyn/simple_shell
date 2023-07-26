@@ -76,7 +76,7 @@ char *_strchr(char *s, char c)
 			return (s + i);
 	if (*(s + i) == c)
 		return (s + i);
-	return (NULL); //changed here
+	return (NULL); /* changed here */
 }
 /**
  * _strspn - gets the length of a prefix substring.

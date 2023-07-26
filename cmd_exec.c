@@ -164,7 +164,7 @@ int cmd_exec(data_shell *datash)
 {
 	pid_t pd;
 	pid_t wpd;
-	int state = 0; // changed here
+	int state = 0; /* changed here */
 	int exec;
 	char *dir;
 	(void) wpd;
