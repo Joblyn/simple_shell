@@ -1,7 +1,19 @@
-# Simple Shell in C
+# Simple Shell project
+
+This is a simple UNIX command interpreter based on bash and Sh.
+
+## Overview
+
+Simple shell is a sh-compatible command language interpreter that executes commands read from the standard input or from a file.
 
 ### Compilation
-To compile and run the program, run the following command in terminal
-```bash
-gcc -Wall -Werror -Wextra -pedantic -std=gnu89 *.c _printf/*.c -o shell
+
+The shell is started with the standard input connected to the terminal. To start, compile all .c located in this repository by using this command: 
 ```
+gcc -Wall -Werror -Wextra -pedantic *.c -o hsh
+./hsh
+```
+
+## Authors
+
+* Job Oaikhenah <[Joblyn](https://github.com/joblyn)>

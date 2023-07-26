@@ -1,72 +1,73 @@
 #include "main.h"
 
 /**
- * main - Main function handling the shell commands and interactions
- * Return: 0 on success; -1 on failure
+ * free_data - frees data structure
+ *
+ * @datash: data structure
+ * Return: no return
  */
- int main(void)
+void free_data(data_shell *datash)
 {
+	unsigned int i;
 
-	char *buffer = malloc(BUFFER_SIZE);
-	int status;
-	char *token;
-	char *toks[2];
-	int counter = 0;
-	size_t len = BUFFER_SIZE;
-	pid_t child_pid = 1;
-	ssize_t bytesread;
-	char path[5] = "/bin/";
-	char *envp[] = { "/bin/", NULL };
-
-	while (1)
+	for (i = 0; datash->_environ[i]; i++)
 	{
-		_printf("#hsh$ "); /* Display the prompt */
-
-		bytesread = getline(&buffer, &len, stdin);
-
-		/* Handle end of file (Ctrl+D)*/
-		if (bytesread == -1)
-		{
-			_printf("\n");
-			break;
-		}
-
-		token = strtok(buffer, " ");
-		/*add path to beginning of command*/
-		if (!(_strncmp(envp[0], token, _strlen(envp[0])) == 0)) {
-			_strcat(path, token);
-			token = path;
-		}
-		counter = 0;
-		while (token != NULL)
-		{
-			toks[counter] = _strdup(token);
-			token = strtok(NULL, " ");
-			counter++;
-		}
-		
-		child_pid = fork();
-		if (child_pid == -1)
-		{
-			perror("ERROR");
-			free(buffer);
-			return(-1);
-		}
-
-		if (child_pid == 0)
-		{
-			if (execve(toks[0], toks, envp) == -1)
-			{
-				perror("ERROR");
-				free(buffer);
-				return (-1);
-			}
-		} else {
-			wait(&status);
-		}
+		free(datash->_environ[i]);
 	}
 
-	free(buffer);
+	free(datash->_environ);
+	free(datash->pid);
+}
 
-	return (0);
+/**
+ * set_data - Initialize data structure
+ *
+ * @datash: data structure
+ * @av: argument vector
+ * Return: no return
+ */
+void set_data(data_shell *datash, char **av)
+{
+	unsigned int i;
+
+	datash->av = av;
+	datash->input = NULL;
+	datash->args = NULL;
+	datash->status = 0;
+	datash->counter = 1;
+
+	for (i = 0; environ[i]; i++)
+		;
+
+	datash->_environ = malloc(sizeof(char *) * (i + 1));
+
+	for (i = 0; environ[i]; i++)
+	{
+		datash->_environ[i] = _strdup(environ[i]);
+	}
+
+	datash->_environ[i] = NULL;
+	datash->pid = aux_itoa(getpid());
+}
+
+/**
+ * main - Entry point
+ *
+ * @ac: argument count
+ * @av: argument vector
+ *
+ * Return: 0 on success.
+ */
+int main(int ac, char **av)
+{
+	data_shell datash;
+	(void) ac;
+
+	signal(SIGINT, get_sigint);
+	set_data(&datash, av);
+	shell_loop(&datash);
+	free_data(&datash);
+	if (datash.status < 0)
+		return (255);
+	return (datash.status);
 }
