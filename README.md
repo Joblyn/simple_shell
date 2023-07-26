@@ -17,3 +17,4 @@ gcc -Wall -Werror -Wextra -pedantic *.c -o hsh
 ## Authors
 
 * Job Oaikhenah <[Joblyn](https://github.com/joblyn)>
+* Caleb Nkunze <[Joblyn](https://github.com/Cank256)>
